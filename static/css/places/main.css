@@ -86,3 +86,69 @@ button, .button {
     position: relative;
     float: right;
 }
+
+.paginator {
+    text-align: center;
+
+}
+
+.paginator-list {
+    border-top: 1px solid #CFE3DC;
+    font-weight: 700;
+    line-height: 31px;
+    list-style: none;
+    margin: 30px 0;
+    padding: 30px 0 0;
+    text-align: center;
+
+}
+
+.pag-link{
+    display: inline-block;
+    list-style: none;
+    margin-left: 30px;
+    margin-right: 30px;
+    top: 0px;
+
+    /*height: 50px;*/
+}
+
+.pag-link a {
+    /*font-family: Arial, Helvetica, sans-serif;*/
+    text-decoration: none;
+    font-weight: bolder;
+    height: 50px;
+    width: auto;
+    display: block;
+    text-align: center;
+    text-decoration: none;
+    line-height: 50px;
+    color: #cccccc;
+    background-color: #21262d;
+    border-radius: 50%;
+    text-indent: 1px;
+    border-radius: 20px;
+    height: 40px;
+    line-height: 43px;
+    width: 40px;
+}
+
+
+.pag-link a:hover {
+    text-decoration: none;
+    color: #cccccc;
+
+
+}
+.card-img {
+    max-width: 200px;
+    max-height: 200px;
+    object-fit: cover;
+}
+.content-section {
+  padding: 10px 20px;
+  border: 1px solid #fff;
+  border-radius: 6px;
+  margin-bottom: 20px;
+}
+

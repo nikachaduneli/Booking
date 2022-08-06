@@ -35,7 +35,7 @@
                         {% if user|has_group:'owner' %}
                             <a class="nav-link nav-link" aria-current="page" href="{% url 'new_place' %}">Add New Place</a>
                         {% endif %}
-                        <a class="nav-item nav-link" href="#" >Profile</a>
+                        <a class="nav-item nav-link" href="{% url 'my_places' %}" >My Places</a>
                         <a class="nav-item nav-link" href="{% url 'logout' %}" >Log Out</a>
                     {% else %}
                         <a class="nav-item nav-link" href="{% url 'login' %}">Login</a>
@@ -67,6 +67,26 @@
             {% block content %}
 
             {% endblock %}
+            {% if is_paginated %}
+                <div class="paginator">
+                    <ul class="paginator-list">
+                        {% if page_obj.has_previous %}
+                            <li class="pag-link">
+                                <a href="?page={{ page_obj.number|add:'-1' }}" class=' '><</a>
+                            </li>
+                        {% endif %}
+                        <li class="pag-link">
+                            <p  class='label' >Page {{ page_obj.number }} of {{page_obj.paginator.num_pages}}</p>
+                        </li>
+
+                        {% if page_obj.has_next %}
+                            <li class="pag-link">
+                                <a href="?page={{page_obj.number|add:'1'}}" >></a>
+                            </li>
+                        {% endif %}
+                    </ul>
+                </div>
+            {% endif %}
         </div>
         <div class="col col-lg-4">
             {% block side_content %}

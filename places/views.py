@@ -1,8 +1,9 @@
-from .models import Place, Image
+from .models import Place, Image, ImageTn
 from .forms import ImageForm, PlaceForm, ReviewForm
 from django.shortcuts import render, redirect
 from django.contrib import messages
 from .filters import PlaceFilter
+from .helpers import paginate
 from django.contrib.auth.decorators import login_required
 from django.views.generic import (
     ListView,
@@ -21,16 +22,15 @@ class PlaceListView(ListView):
     model = Place
     template_name = 'places/place_list.html'
 
-    paginate_by = 20
+    paginate_by = 10
 
     def get(self, request, *args, **kwargs):
-        places = Place.objects.all()
+        places = Place.objects.all().order_by('-date_posted')
         place_filter = PlaceFilter(request.GET, queryset=places)
         places = place_filter.qs
-        city = request.GET.get('city')
-        min_price = request.GET.get('price_min')
-        max_price = request.GET.get('price_max')
-        context = {'places': places, 'filter': place_filter, 'title':'home'}
+        paginator = paginate(self.paginate_by, places, request)
+        context = {'filter': place_filter, 'title':'home'}
+        context.update(paginator)
         return render(request, 'places/place_list.html', context)
 
 class PlaceDetailView(DetailView):
@@ -62,11 +62,14 @@ class PlaceUpdateView(LoginRequiredMixin, UserPassesTestMixin, UpdateView):
 
     def post(self, request, *args, **kwargs):
         self.object = self.get_object()
-
         for image in request.FILES.getlist('image'):
             Image.objects.create(place=self.object, image=image)
+            ImageTn.objects.create(place=self.object, image_tn=image)
 
         return super().post(request, *args, **kwargs)
+
+    # def get_success_url(self):
+
 
     def form_valid(self, form):
         form.instance.owner = self.request.user
@@ -115,6 +118,7 @@ def create_place(request, *args, **kwargs):
             images = request.FILES.getlist('image')
             for image in images:
                 Image.objects.create(place=place, image=image)
+                ImageTn.objects.create(place=place, image_tn=image)
 
             messages.success(request, "New place Added")
             return redirect("place_list")

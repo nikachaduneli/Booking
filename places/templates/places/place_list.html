@@ -4,7 +4,7 @@
     {% for place in places %}
         <article class=" mb-3" style="">
             <div class="card" style="flex-direction: row;">
-                <img src="{{place.images.first.image.url}}" style="max-width: 200px; max-height: 200px;  object-fit: cover;"  class="card-img-top" alt="image">
+                <img src="{{place.images_tn.first.image_tn.url}}"  class="card-img card-img-top" alt="image">
                 <div class="card-body">
                     <div class="right-side">
                         <p class="price">{{ place.price}} $</p>
@@ -26,7 +26,10 @@
 
 {% block side_content %}
     <form class="form" method="get">
-        {{ filter.form|crispy}}
-        <input type="submit" value="Filter" class="btn btn-info" />
+        <fieldset class="form-group" >
+            <legend class="border-bottom mb-4">Filter Places</legend>
+            {{ filter.form|crispy}}
+            <input type="submit" value="Filter" class="btn btn-info" />
+        </fieldset>
     </form>
 {% endblock %}

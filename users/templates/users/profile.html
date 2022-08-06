@@ -1,0 +1,56 @@
+{% extends "places/base.html" %}
+{% load crispy_forms_tags %}
+{% block content %}
+    {% if not places %}
+        <h5>You Don't Have any Places Yet</h5>
+    {% else %}
+        <h5>My Places</h5>
+        {% for place in places %}
+            <article class=" mb-3">
+                <div class="card" style="flex-direction: row;">
+                    <img src="{{place.images_tn.first.image_tn.url}}"  class="card-img-top card-img" alt="image">
+                    <div class="card-body">
+                        <div class="right-side">
+                            <p class="price">{{ place.price}} $</p>
+                            <p class="rating">{{ place.score }}</p>
+                        </div>
+                        <h3 class="card-title">{{ place.name }}</h3>
+                        <small>{{ place.city }}</small>
+                        {% if place.description|length > 30 %}
+                            <p class="card-text">{{place.description|truncatechars:100 }}</p>
+                        {% else %}
+                            <p class="card-text">{{place.description}}</p>
+                        {% endif %}
+                        <a href="{% url 'place_detail' place.id %}" class="btn btn-primary">See Details</a>
+                        <br>
+                        {% if place.reviews.all.count != 0  %}
+                            <a href="{% url 'place_detail' place.id %}">see {{place.comments.all.count}} reviews </a>
+                        {% else %}
+                            <p> No reviews yet.
+                                <a href="{% url 'place_detail' place.id %}">
+                                    <button class="btn-outline-secondary">Add One.</button>
+                                </a>
+                            </p>
+                        {% endif %}
+                    </div>
+                </div>
+            </article>
+        {% endfor %}
+    {% endif %}
+{% endblock content %}
+
+
+{% block side_content %}
+
+    <form method="POST" enctype="multipart/form-data" class="form">
+        {% csrf_token %}
+        <fieldset class="form-group" >
+            <legend class="border-bottom mb-4">Update Your Information</legend>
+            {{ u_form|crispy }}
+            <div class="form-group">
+                <button type="submit" class="btn btn-outline-info">Update</button>
+            </div>
+        </fieldset>
+    </form>
+{% endblock side_content%}
+
