@@ -1,0 +1,23 @@
+{% extends 'places/base.html' %}
+{% load crispy_forms_tags %}
+{% block content %}
+    <form class="form" method="POST" enctype="multipart/form-data">
+        {% csrf_token %}
+        <fieldset class="form-group" >
+            {% if update%}
+                <legend class="border-bottom mb-4">Update "{{object.name}}"</legend>
+            {% else %}
+                <legend class="border-bottom mb-4">Create New Place</legend>
+            {%endif%}
+            {{ form|crispy}}
+            {{ image_form|crispy }}
+            <div class="form-group">
+                {% if update%}
+                    <button type="submit" class="btn btn-outline-info">Update</button>
+                {% else %}
+                    <button type="submit" class="btn btn-outline-info">Add</button>
+                {%endif%}
+            </div>
+        </fieldset>
+    </form>
+{% endblock %}

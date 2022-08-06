@@ -1,0 +1,81 @@
+{% load static %}
+{% load tags %}
+
+<!DOCTYPE html>
+<html>
+<head>
+
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+    <link rel="stylesheet" type="text/css" href="{% static 'css/places/main.css' %}">
+    <link rel="stylesheet" type="text/css" href="{% static 'css/lightbox.min.css' %}">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+
+    {% if title %}
+        <title>{{ title }}</title>
+    {% else %}
+        <title>Document</title>
+    {% endif %}
+</head>
+<body>
+<header class="site-header" style="margin-bottom: 100px">
+    <nav class="navbar navbar-expand-md navbar-dark bg-steel bg-dark fixed-top">
+        <div class="container">
+            <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarToggle" aria-controls="navbarToggle" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarToggle">
+                <div class="navbar-brand mr-auto">
+                    <a class="navbar-brand " href="{% url 'place_list' %}">Home</a>
+                </div>
+                <div class="navbar-nav">
+                    {% if user.is_authenticated %}
+                        {% if user|has_group:'owner' %}
+                            <a class="nav-link nav-link" aria-current="page" href="{% url 'new_place' %}">Add New Place</a>
+                        {% endif %}
+                        <a class="nav-item nav-link" href="#" >Profile</a>
+                        <a class="nav-item nav-link" href="{% url 'logout' %}" >Log Out</a>
+                    {% else %}
+                        <a class="nav-item nav-link" href="{% url 'login' %}">Login</a>
+                        <a class="nav-item nav-link" href="{% url 'register' %}">Register</a>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </nav>
+</header>
+<main role="main" class="container">
+    <div class="row">
+        <div class="col-md-8">
+            {% if messages %}
+                {% for message in messages %}
+                    {% if message.level == DEFAULT_MESSAGE_LEVELS.ERROR %}
+                        <div class="alert message alert-danger">
+                            {{message}}
+                        </div>
+                    {% else %}
+                        <div class="alert message alert-{{message.tags}}">
+                            {{message}}
+                        </div>
+                    {% endif %}
+                {% endfor %}
+            {% endif %}
+        </div>
+        <div class="col-lg-8">
+            {% block content %}
+
+            {% endblock %}
+        </div>
+        <div class="col col-lg-4">
+            {% block side_content %}
+
+            {% endblock side_content %}
+        </div>
+    </div>
+</main>
+
+<script src="{% static 'js/lightbox-plus-jquery.min.js' %}"></script>
+</body>
+</html>

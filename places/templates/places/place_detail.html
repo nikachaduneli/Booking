@@ -1,0 +1,66 @@
+{% extends 'places/base.html' %}
+{% load crispy_forms_tags %}
+{% block content %}
+
+    <article class=" article">
+        <div class="right-side">
+            <h4 class="price">{{ object.price}} $</h4>
+            <h4 class="rating">{{ object.score }}</h4>
+        </div>
+        <h2 class="card-title">Name: {{ object.name }}</h2>
+        <p><span class="label">City: </span>{{ object.city }}</p>
+        <p><span class="label">Address: </span>{{ object.address }}</p>
+        <p><span class="label">Posted: </span>{{ object.date_posted|date:"d, M, Y " }}</p>
+        <br>
+        <div class="gallery">
+            {% for image in object.images.all %}
+                <a href="{{ image.image.url }}" data-lightbox="image">
+                    <img src="{{ image.image.url }}" alt="{{ object.name }}">
+                </a>
+            {% endfor %}
+        </div>
+        <br>
+        <br>
+        <p class="card-text"><span class="label">Description: </span><br>{{object.description}}</p>
+        {% if object.owner.id == user.id %}
+            <div>
+                <a class="btn btn-outline-primary" href="{% url 'place_update' object.id %}" >Update Place</a>
+                <a class="btn btn-outline-danger" href="{% url 'place_delete' object.id %}" >Delete Place</a>
+            </div>
+        {% endif %}
+    </article>
+    <h1>Reviews({{object.reviews.all.count}})</h1>
+    {% if object.comments.all.count != 0  %}
+        <ul class="list-group" >
+            {% for review in object.reviews.all %}
+                <div class="comment" >
+                    <div class="media-body form-group">
+                        <div class="article-metadata">
+                            <div class="right-side">
+                                <p class="rating">{{ review.score }}</p>
+                            </div>
+                            <p>{{ review.author }}</p>
+                            <small class="text-muted">{{ review.date|date:"d, M, Y "  }}</small>
+                        </div>
+                        <p class="comment-child">{{review.comment}}</p>
+                    </div>
+                </div>
+            {% endfor %}
+        </ul>
+    {% else %}
+        <p> No Reviews yet</p>
+    {% endif %}
+    <form method="POST" onsubmit="submit_button.disabled=true; return true;" class="form" action="{%url 'place_detail' object.id%}" >
+        {% csrf_token %}
+        {{form|crispy}}
+        <button type="submit" class="btn button"  value="Submit" name="submit_button">Add Review</button>
+    </form>
+{% endblock %}
+
+{% block side_content %}
+    <article class="article">
+        <h4>Owner: {{ object.owner.full_name }}</h4>
+        <p><img src="../../../media/icons/mobile.png" width="20px" > {{ object.owner.phone_number }}</p>
+        <p><img src="../../../media/icons/email.png" width="20px" > {{ object.owner.email }}</p>
+    </article>
+{% endblock %}

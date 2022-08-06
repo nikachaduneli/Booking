@@ -1,0 +1,16 @@
+{% extends "places/base.html" %}
+{% block content%}
+  <div class="content-section">
+    <form class="form" method="POST">
+      {% csrf_token %}
+      <fieldset class="form-group" >
+        <legend class="border-bottom mb-4">Delete Place</legend>
+        <h2>Are you sure, you want to delete  "{{object.name}}"?</h2>
+        <div class="form-group" style="position: relative;float: right;">
+          <a href="{% url 'place_detail' object.id %}" class="btn button">Cancel</a>
+          <button type="submit" class="btn btn-outline-danger">Delete</button>
+        </div>
+      </fieldset>
+    </form>
+  </div>  
+{% endblock %}  
