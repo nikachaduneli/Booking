@@ -4,7 +4,7 @@
     {% for place in places %}
         <article class=" mb-3" style="">
             <div class="card" style="flex-direction: row;">
-                <img src="{{place.thumbnail.url}}"  class="card-img card-img-top" alt="image">
+                <img src="{{place.images.first.image.url}}"  class="card-img card-img-top" alt="image">
                 <div class="card-body">
                     <div class="right-side">
                         <p class="price">{{ place.price}} $</p>

@@ -146,7 +146,6 @@ def create_place(request, *args, **kwargs):
             images = request.FILES.getlist('image')
             place = place_form.save(commit=False)
             place.owner = request.user
-            place.thumbnail = images[0]
             place.save()
             for image in images:
                 PlaceImage.objects.create(place=place, image=image)

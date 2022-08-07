@@ -15,7 +15,6 @@ class Place(models.Model):
     address = models.CharField(max_length=100)
     description = models.TextField(max_length=1000)
     price = models.FloatField(default=0)
-    thumbnail = models.ImageField(upload_to='place_pics/tn/', default='default.jpg')
 
     @property
     def images_list(self):
@@ -36,14 +35,6 @@ class Place(models.Model):
         return self.name
 
 
-    def save(self, *args, **kwargs):
-        super().save(*args, **kwargs)
-
-        img = Image.open(self.thumbnail.path)
-        if img.height > 300 or img.width > 300:
-            output_size = (300, 300)
-            img.thumbnail(output_size)
-            img.save(self.thumbnail.path)
 
 
 
@@ -51,7 +42,14 @@ class PlaceImage(models.Model):
     place = models.ForeignKey(Place, on_delete=models.CASCADE, related_name='images')
     image = models.ImageField(upload_to='place_pics', default='default.jpg', blank=True, null=True)
 
+    def save(self, *args, **kwargs):
+        super().save(*args, **kwargs)
 
+        img = Image.open(self.image.path)
+        if img.height > 800 or img.width > 800:
+            output_size = (800, 800)
+            img.thumbnail(output_size)
+            img.save(self.image.path)
 
 
 class Reservation(models.Model):
