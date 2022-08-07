@@ -4,7 +4,7 @@ from django.utils import timezone
 from django.urls import reverse
 from django.core.validators import MinValueValidator, MaxValueValidator
 from users.models import User
-from PIL import Image as pill_image
+from PIL import Image as Image
 
 
 class Place(models.Model):
@@ -15,6 +15,7 @@ class Place(models.Model):
     address = models.CharField(max_length=100)
     description = models.TextField(max_length=1000)
     price = models.FloatField(default=0)
+    thumbnail = models.ImageField(upload_to='place_pics/tn/', default='default.jpg')
 
     @property
     def images_list(self):
@@ -35,19 +36,22 @@ class Place(models.Model):
         return self.name
 
 
-class Image(models.Model):
+    def save(self, *args, **kwargs):
+        super().save(*args, **kwargs)
+
+        img = Image.open(self.thumbnail.path)
+        if img.height > 300 or img.width > 300:
+            output_size = (300, 300)
+            img.thumbnail(output_size)
+            img.save(self.thumbnail.path)
+
+
+
+class PlaceImage(models.Model):
     place = models.ForeignKey(Place, on_delete=models.CASCADE, related_name='images')
     image = models.ImageField(upload_to='place_pics', default='default.jpg', blank=True, null=True)
-    image_tn = models.ImageField(upload_to='place_pics/tn', default='default.jpg', blank=True, null=True)
 
-    def save(self, force_insert=False, force_update=False, using=None, update_fields=None):
-        super(Image, self).save(force_insert, force_update, using, update_fields)
-        img = pill_image.open(self.image_tn.path)
-        if img.height > 400 or img.width > 400:
-            output_size = (400, 400)
-            img.thumbnail(output_size)
-            img.save(self.image_tn.path)
-        super(Image, self).save(force_insert, force_update, using, update_fields)
+
 
 
 class Reservation(models.Model):
@@ -56,6 +60,7 @@ class Reservation(models.Model):
     date = models.DateField(default=timezone.now)
     start_hour = models.TimeField(default=timezone.now)
     end_hour = models.TimeField(default=timezone.now)
+
 
 class Review(models.Model):
     place = models.ForeignKey(Place, on_delete=models.CASCADE, related_name='reviews')

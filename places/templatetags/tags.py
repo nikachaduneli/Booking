@@ -4,8 +4,8 @@ register = template.Library()
 
 
 @register.filter(name='has_group')
-def has_group(user, group_name):
-    return user.groups.filter(name=group_name).exists()
+def has_group(user, user_type):
+    return user.user_type == user_type
 
 
 @register.filter(name='has_reservation')

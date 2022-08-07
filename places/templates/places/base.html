@@ -32,7 +32,7 @@
                 </div>
                 <div class="navbar-nav">
                     {% if user.is_authenticated %}
-                        {% if user|has_group:'owner' %}
+                        {% if user|has_group:'Place Owner' %}
                             <a class="nav-link nav-link" aria-current="page" href="{% url 'new_place' %}">Add New Place</a>
                         {% endif %}
                         <a class="nav-item nav-link" href="{% url 'my_places' %}" >My Places</a>

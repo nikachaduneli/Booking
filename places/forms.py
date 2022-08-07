@@ -1,5 +1,5 @@
 from django import forms
-from .models import Image, Place, Review, Reservation
+from .models import PlaceImage, Place, Review, Reservation
 from django.core.validators import MinValueValidator, MaxValueValidator
 
 
@@ -11,7 +11,7 @@ class PlaceForm(forms.ModelForm):
         fields = ['name', 'city', 'address', 'description', 'price']
 
 
-class ImageForm(forms.ModelForm):
+class PlaceImageForm(forms.ModelForm):
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -21,7 +21,7 @@ class ImageForm(forms.ModelForm):
                              widget=forms.ClearableFileInput(attrs={'multiple': True}))
 
     class Meta:
-        model = Image
+        model = PlaceImage
         fields = ['image']
 
 

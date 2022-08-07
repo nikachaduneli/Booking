@@ -31,7 +31,7 @@
             </div>
         {% endif %}
         <div style="text-align: right">
-            <button class="btn button" onclick="create_reservation_form()" id="make_reservation">Make Reservation</button>
+            <button class="btn button"  id="make_reservation">Make Reservation</button>
         </div>
         <div id="reservation_form"></div>
     </article>
@@ -57,11 +57,9 @@
     {% else %}
         <p> No Reviews yet</p>
     {% endif %}
-    <form method="POST" onsubmit="submit_button.disabled=true; return true;" class="form" action="{%url 'place_detail' object.id%}" >
-        {% csrf_token %}
-        {{review_form|crispy}}
-        <button type="submit" class="btn button"  value="Submit" name="submit_button">Add Review</button>
-    </form>
+    <button class="btn button" id="add_review">Add Review</button>
+    <div id="review_form_div"></div>
+
     <script type="text/javascript">
         let make_reservation_button = document.getElementById('make_reservation');
         let reservation_div = document.getElementById('reservation_form');
@@ -70,9 +68,20 @@
                     <form method="POST" onsubmit="submit_button.disabled=true; return true;" class="form" action="{%url 'place_detail' object.id%}" >
                          {% csrf_token %}
                          {{res_form|crispy}}
-                         <button type="submit" class="btn button"  value="Submit" name="submit_button">Add Reservation</button>
+                         <button type="submit" class="btn btn-outline-dark"  value="Submit" name="submit_button">Add</button>
                     </form>`;
         }
+        let add_review_button = document.getElementById('add_review')
+        let review_form_div = document.getElementById('review_form_div');
+        add_review_button.onclick = function (){
+            review_form_div.innerHTML = `
+            <form method="POST" onsubmit="submit_button.disabled=true; return true;" class="form" action="{%url 'place_detail' object.id%}" >
+                {% csrf_token %}
+                {{review_form|crispy}}
+                <button type="submit" class="btn btn-outline-dark"  value="Submit" name="submit_button">Add</button>
+            </form>`;
+        }
+
 
     </script>
 {% endblock %}
@@ -135,8 +144,8 @@
                     }
                 });
 
-        }
             }
+        }
 
     </script>
 {% endblock %}

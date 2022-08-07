@@ -9,8 +9,8 @@ class User(AbstractUser, PermissionsMixin):
     phone_number = models.CharField(max_length=20)
     email = models.EmailField()
     user_type = models.CharField(choices=((None, '----'),
-                                          ('1', 'Place Owner'),
-                                          ('2', 'Costumer')), default='0', max_length=10)
+                                          ('Place Owner', 'Place Owner'),
+                                          ('Costumer', 'Costumer')), default='0', max_length=11)
 
     @property
     def full_name(self):
@@ -19,12 +19,6 @@ class User(AbstractUser, PermissionsMixin):
     def save(self, *args, **kwargs):
         super().save(*args, **kwargs)
 
-        group = None
-        if self.user_type == '1':
-            group = Group.objects.get(name='owner')
-        elif self.user_type == '2':
-            group = Group.objects.get(name='costumer')
-        self.groups.add(group)
 
     def __str__(self):
         return self.full_name

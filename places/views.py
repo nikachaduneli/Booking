@@ -1,5 +1,5 @@
-from .models import Place, Image, Reservation
-from .forms import ImageForm, PlaceForm, ReviewForm, ReservationForm
+from .models import Place, PlaceImage, Reservation
+from .forms import PlaceImageForm, PlaceForm, ReviewForm, ReservationForm
 from django.shortcuts import render, redirect
 from django.contrib import messages
 from .filters import PlaceFilter
@@ -18,6 +18,12 @@ from django.contrib.auth.mixins import (
 from .decorators import allwed_users
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
+from django.core.files.uploadedfile import InMemoryUploadedFile
+#
+# a = InMemoryUploadedFile()
+# a.
+
+
 
 
 
@@ -90,7 +96,7 @@ class PlaceUpdateView(LoginRequiredMixin, UserPassesTestMixin, UpdateView):
     def post(self, request, *args, **kwargs):
         self.object = self.get_object()
         for image in request.FILES.getlist('image'):
-            Image.objects.create(place=self.object, image=image)
+            PlaceImage.objects.create(place=self.object, image=image)
 
         return super().post(request, *args, **kwargs)
 
@@ -110,7 +116,7 @@ class PlaceUpdateView(LoginRequiredMixin, UserPassesTestMixin, UpdateView):
         context = super().get_context_data(**kwargs)
         context['title'] = f'Update {self.object.name}'
         context['update'] = True
-        context['image_form'] = ImageForm()
+        context['image_form'] = PlaceImageForm()
         return context
 
 
@@ -131,19 +137,19 @@ class PlaceDeleteView(LoginRequiredMixin, UserPassesTestMixin, DeleteView):
         return False
 
 
-@allwed_users(allowed_roles='owner')
+@allwed_users(allowed_roles=['Place Owner'])
 @login_required(login_url='login')
 def create_place(request, *args, **kwargs):
     if request.method == "POST":
         place_form = PlaceForm(request.POST)
-        image_form = ImageForm(request.POST, request.FILES, prefix='image')
         if place_form.is_valid():
+            images = request.FILES.getlist('image')
             place = place_form.save(commit=False)
             place.owner = request.user
+            place.thumbnail = images[0]
             place.save()
-            images = request.FILES.getlist('image')
             for image in images:
-                Image.objects.create(place=place, image=image)
+                PlaceImage.objects.create(place=place, image=image)
 
             messages.success(request, "New place Added")
             return redirect("place_list")
@@ -151,7 +157,7 @@ def create_place(request, *args, **kwargs):
             messages.error(request, f'{place_form.errors}')
     else:
         place_form = PlaceForm()
-        image_form = ImageForm()
+        image_form = PlaceImageForm()
 
     context = {'form': place_form,
                'image_form': image_form,
