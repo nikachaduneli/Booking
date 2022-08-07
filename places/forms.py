@@ -1,5 +1,5 @@
 from django import forms
-from .models import Image, Place, Review
+from .models import Image, Place, Review, Reservation
 from django.core.validators import MinValueValidator, MaxValueValidator
 
 
@@ -9,8 +9,6 @@ class PlaceForm(forms.ModelForm):
     class Meta:
         model = Place
         fields = ['name', 'city', 'address', 'description', 'price']
-
-        exclude = ['owner', 'date_posted']
 
 
 class ImageForm(forms.ModelForm):
@@ -35,18 +33,36 @@ class ReviewForm(forms.ModelForm):
     }))
 
     score = forms.ChoiceField(choices=((None, '-----'),
-                                        (1, '1'),
-                                        (2, '2'),
-                                        (3, '3'),
-                                        (4, '4'),
-                                        (5, '5'),
-                                        (6, '6'),
-                                        (7, '7'),
-                                        (8, '8'),
-                                        (9, '9'),
-                                        (10, '10')))
+                                       (1, '1'),
+                                       (2, '2'),
+                                       (3, '3'),
+                                       (4, '4'),
+                                       (5, '5'),
+                                       (6, '6'),
+                                       (7, '7'),
+                                       (8, '8'),
+                                       (9, '9'),
+                                       (10, '10')))
 
     class Meta:
         model = Review
         fields = ['comment', 'score']
 
+
+class DateInput(forms.DateInput):
+    input_type = 'date'
+
+
+class TimeInput(forms.DateInput):
+    input_type = 'time'
+
+
+class ReservationForm(forms.ModelForm):
+    class Meta:
+        model = Reservation
+        fields = ['date', 'start_hour', 'end_hour']
+        widgets = {
+            'date': DateInput(),
+            'start_hour': TimeInput(),
+            'end_hour': TimeInput()
+        }

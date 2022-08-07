@@ -1,5 +1,7 @@
 {% extends 'places/base.html' %}
 {% load crispy_forms_tags %}
+{% load static %}
+{% load tags %}
 {% block content %}
 
     <article class=" article">
@@ -28,9 +30,22 @@
                 <a class="btn btn-outline-danger" href="{% url 'place_delete' object.id %}" >Delete Place</a>
             </div>
         {% endif %}
+        <div style="text-align: right">
+            <button class="btn button" onclick="create_reservation_form()" id="make_reservation">Make Reservation</button>
+        </div>
+        <div id="reservation_form"></div>
     </article>
+
+    {% for reservation in object.reservations.all %}
+        <article class="article">
+        <p>{{ reservation.date }}</p>
+        <p>{{ reservation.start_hour }}</p>
+        <p>{{ reservation.end_hour }}</p>
+        </article>
+
+    {% endfor %}
     <h1>Reviews({{object.reviews.all.count}})</h1>
-    {% if object.comments.all.count != 0  %}
+    {% if object.reviews.all.count != 0  %}
         <ul class="list-group" >
             {% for review in object.reviews.all %}
                 <div class="comment" >
@@ -52,15 +67,32 @@
     {% endif %}
     <form method="POST" onsubmit="submit_button.disabled=true; return true;" class="form" action="{%url 'place_detail' object.id%}" >
         {% csrf_token %}
-        {{form|crispy}}
+        {{review_form|crispy}}
         <button type="submit" class="btn button"  value="Submit" name="submit_button">Add Review</button>
     </form>
+    <script type="text/javascript">
+        function create_reservation_form(){
+            let reservation_button = document.getElementById('make_reservation');
+            let reservation_div = document.getElementById('reservation_form');
+            reservation_div.innerHTML = `
+                    <form method="POST" onsubmit="submit_button.disabled=true; return true;" class="form" action="{%url 'place_detail' object.id%}" >
+                         {% csrf_token %}
+                         {{res_form|crispy}}
+                         <button type="submit" class="btn button"  value="Submit" name="submit_button">Add Review</button>
+                    </form>`;
+        }
+
+    </script>
 {% endblock %}
 
+
+
 {% block side_content %}
-    <article class="article">
-        <h4>Owner: {{ object.owner.full_name }}</h4>
-        <p><img src="../../../media/icons/mobile.png" width="20px" > {{ object.owner.phone_number }}</p>
-        <p><img src="../../../media/icons/email.png" width="20px" > {{ object.owner.email }}</p>
-    </article>
+    {% if user|has_reservation:object.id %}
+        <article class="article">
+            <h4>Owner: {{ object.owner.full_name }}</h4>
+            <p><img src="{% static 'icons/mobile.png' %}" width="20px" > {{ object.owner.phone_number }}</p>
+            <p><img src="{% static 'icons/email.png' %}" width="20px" > {{ object.owner.email }}</p>
+        </article>
+    {% endif %}
 {% endblock %}

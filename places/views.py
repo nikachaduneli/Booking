@@ -1,9 +1,9 @@
-from .models import Place, Image, ImageTn
-from .forms import ImageForm, PlaceForm, ReviewForm
+from .models import Place, Image, Reservation
+from .forms import ImageForm, PlaceForm, ReviewForm, ReservationForm
 from django.shortcuts import render, redirect
 from django.contrib import messages
 from .filters import PlaceFilter
-from .helpers import paginate
+from .helpers import paginate, reservation_already_exists
 from django.contrib.auth.decorators import login_required
 from django.views.generic import (
     ListView,
@@ -11,6 +11,8 @@ from django.views.generic import (
     UpdateView,
     DeleteView
 )
+from django.db.models.query import QuerySet
+from django.db.models import Count
 from django.contrib.auth.mixins import (
     LoginRequiredMixin,
     UserPassesTestMixin
@@ -29,29 +31,47 @@ class PlaceListView(ListView):
         place_filter = PlaceFilter(request.GET, queryset=places)
         places = place_filter.qs
         paginator = paginate(self.paginate_by, places, request)
-        context = {'filter': place_filter, 'title':'home'}
+        context = {'filter': place_filter, 'title': 'home'}
         context.update(paginator)
         return render(request, 'places/place_list.html', context)
+
 
 class PlaceDetailView(DetailView):
     model = Place
     template_name = 'places/place_detail.html'
 
     def post(self, request, *args, **kwargs):
-        form = ReviewForm(request.POST)
-        if form.is_valid():
-            place = self.get_object()
-            form.instance.author = request.user
-            form.instance.place = place
-            form.save()
-            return redirect('place_detail', pk=place.id)
+        review_form = ReviewForm(request.POST)
+        reservation_form = ReservationForm(request.POST)
+
+        place = self.get_object()
+
+
+        if review_form.is_valid():
+            review_form.instance.author = request.user
+            review_form.instance.place = place
+            review_form.save()
+
+        if reservation_form.is_valid():
+
+            if reservation_already_exists(reservation_form.cleaned_data, place.id):
+                messages.error(request, 'reservation on that time already exists')
+                return redirect('place_detail', pk=place.id)
+
+            reservation_form.instance.author = request.user
+            reservation_form.instance.place = place
+            reservation_form.save()
+
+        return redirect('place_detail', pk=place.id)
+
     def get(self, request, *args, **kwargs):
         return super().get(request, *args, **kwargs)
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context['title'] = self.object.name
-        context['form'] = ReviewForm
+        context['review_form'] = ReviewForm
+        context['res_form'] = ReservationForm
         return context
 
 
@@ -64,12 +84,10 @@ class PlaceUpdateView(LoginRequiredMixin, UserPassesTestMixin, UpdateView):
         self.object = self.get_object()
         for image in request.FILES.getlist('image'):
             Image.objects.create(place=self.object, image=image)
-            ImageTn.objects.create(place=self.object, image_tn=image)
 
         return super().post(request, *args, **kwargs)
 
     # def get_success_url(self):
-
 
     def form_valid(self, form):
         form.instance.owner = self.request.user
@@ -105,6 +123,7 @@ class PlaceDeleteView(LoginRequiredMixin, UserPassesTestMixin, DeleteView):
             return True
         return False
 
+
 @allwed_users(allowed_roles='owner')
 @login_required(login_url='login')
 def create_place(request, *args, **kwargs):
@@ -118,7 +137,6 @@ def create_place(request, *args, **kwargs):
             images = request.FILES.getlist('image')
             for image in images:
                 Image.objects.create(place=place, image=image)
-                ImageTn.objects.create(place=place, image_tn=image)
 
             messages.success(request, "New place Added")
             return redirect("place_list")

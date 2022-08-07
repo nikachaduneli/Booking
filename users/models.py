@@ -9,7 +9,7 @@ class User(AbstractUser, PermissionsMixin):
     phone_number = models.CharField(max_length=20)
     email = models.EmailField()
     user_type = models.CharField(choices=(('1', 'Place Owner'),
-                                          ('2', 'Costumer')), default='1', max_length=10)
+                                          ('2', 'Costumer')), default='0', max_length=10)
 
     @property
     def full_name(self):

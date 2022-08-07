@@ -38,20 +38,24 @@ class Place(models.Model):
 class Image(models.Model):
     place = models.ForeignKey(Place, on_delete=models.CASCADE, related_name='images')
     image = models.ImageField(upload_to='place_pics', default='default.jpg', blank=True, null=True)
-
-
-class ImageTn(models.Model):
-    place = models.ForeignKey(Place, on_delete=models.CASCADE, related_name='images_tn')
-    image_tn = models.ImageField(upload_to='place_pics/tn/', default='default.jpg', blank=True, null=True)
+    image_tn = models.ImageField(upload_to='place_pics/tn', default='default.jpg', blank=True, null=True)
 
     def save(self, force_insert=False, force_update=False, using=None, update_fields=None):
-        super(ImageTn, self).save(force_insert, force_update, using, update_fields)
+        super(Image, self).save(force_insert, force_update, using, update_fields)
         img = pill_image.open(self.image_tn.path)
-        if img.height > 200 or img.width > 200:
-            output_size = (200, 200)
+        if img.height > 400 or img.width > 400:
+            output_size = (400, 400)
             img.thumbnail(output_size)
             img.save(self.image_tn.path)
+        super(Image, self).save(force_insert, force_update, using, update_fields)
 
+
+class Reservation(models.Model):
+    place = models.ForeignKey(Place, on_delete=models.CASCADE, related_name='reservations')
+    author = models.ForeignKey(User, on_delete=models.CASCADE, related_name='reservations')
+    date = models.DateField(default=timezone.now)
+    start_hour = models.TimeField(default=timezone.now)
+    end_hour = models.TimeField(default=timezone.now)
 
 class Review(models.Model):
     place = models.ForeignKey(Place, on_delete=models.CASCADE, related_name='reviews')
