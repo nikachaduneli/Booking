@@ -25,11 +25,12 @@ def paginate(paginate_by, objects, request) -> dict:
 
     return {'is_paginated': is_paginated, 'places': objects}
 
+
 def reservation_already_exists(new_reservation, place_id):
     reservations = Reservation.objects.filter(place_id=place_id)
 
     for reservation in reservations:
-        if reservation.date == new_reservation['date']:
-            if reservation.end_hour > new_reservation['start_hour'] > reservation.start_hour:
-                return True
+        if reservation.date == new_reservation['date'] and reservation.end_hour > \
+                new_reservation['start_hour'] > reservation.start_hour:
+            return True
     return False

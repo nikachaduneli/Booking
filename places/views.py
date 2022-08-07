@@ -11,13 +11,14 @@ from django.views.generic import (
     UpdateView,
     DeleteView
 )
-from django.db.models.query import QuerySet
-from django.db.models import Count
 from django.contrib.auth.mixins import (
     LoginRequiredMixin,
     UserPassesTestMixin
 )
 from .decorators import allwed_users
+from rest_framework.decorators import api_view
+from rest_framework.response import Response
+
 
 
 class PlaceListView(ListView):
@@ -46,7 +47,6 @@ class PlaceDetailView(DetailView):
 
         place = self.get_object()
 
-
         if review_form.is_valid():
             review_form.instance.author = request.user
             review_form.instance.place = place
@@ -64,15 +64,22 @@ class PlaceDetailView(DetailView):
 
         return redirect('place_detail', pk=place.id)
 
-    def get(self, request, *args, **kwargs):
-        return super().get(request, *args, **kwargs)
-
     def get_context_data(self, **kwargs):
+        place = self.get_object()
         context = super().get_context_data(**kwargs)
         context['title'] = self.object.name
         context['review_form'] = ReviewForm
         context['res_form'] = ReservationForm
         return context
+
+
+@api_view(['DELETE'])
+def delete_reservation(request, *args, **kwargs):
+    if request.method == 'DELETE':
+        pk = kwargs.get('pk')
+        reservation = Reservation.objects.filter(id=pk)
+        reservation.delete()
+        return Response({'message': 'reservation deleted'})
 
 
 class PlaceUpdateView(LoginRequiredMixin, UserPassesTestMixin, UpdateView):

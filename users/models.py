@@ -8,13 +8,14 @@ class User(AbstractUser, PermissionsMixin):
     last_name = models.CharField(max_length=200)
     phone_number = models.CharField(max_length=20)
     email = models.EmailField()
-    user_type = models.CharField(choices=(('1', 'Place Owner'),
+    user_type = models.CharField(choices=((None, '----'),
+                                          ('1', 'Place Owner'),
                                           ('2', 'Costumer')), default='0', max_length=10)
 
     @property
     def full_name(self):
         return f'{self.first_name} {self.last_name}'
-    
+
     def save(self, *args, **kwargs):
         super().save(*args, **kwargs)
 
