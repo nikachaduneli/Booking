@@ -10,7 +10,8 @@ def has_group(user, user_type):
 
 @register.filter(name='has_reservation')
 def has_reservation(user, place_id):
-    for reservation in user.reservations.all():
-        if reservation.place_id == place_id:
-            return True
+    if user.is_authenticated:
+        for reservation in user.reservations.all():
+            if reservation.place_id == place_id:
+                return True
     return False

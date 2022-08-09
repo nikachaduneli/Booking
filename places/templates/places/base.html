@@ -49,19 +49,21 @@
 <main role="main" class="container">
     <div class="row">
         <div class="col-md-8">
-            {% if messages %}
-                {% for message in messages %}
-                    {% if message.level == DEFAULT_MESSAGE_LEVELS.ERROR %}
-                        <div class="alert message alert-danger">
-                            {{message}}
-                        </div>
-                    {% else %}
-                        <div class="alert message alert-{{message.tags}}">
-                            {{message}}
-                        </div>
-                    {% endif %}
-                {% endfor %}
-            {% endif %}
+            <div id="messages">
+                {% if messages %}
+                    {% for message in messages %}
+                        {% if message.level == DEFAULT_MESSAGE_LEVELS.ERROR %}
+                            <div class="alert message text-center alert-danger">
+                                {{message}}
+                            </div>
+                        {% else %}
+                            <div class="alert message text-center alert-{{message.tags}}">
+                                {{message}}
+                            </div>
+                        {% endif %}
+                    {% endfor %}
+                {% endif %}
+            </div>
         </div>
         <div class="col-lg-8">
             {% block content %}

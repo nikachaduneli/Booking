@@ -5,6 +5,7 @@ from django.contrib import messages
 from .filters import PlaceFilter
 from .helpers import paginate, reservation_already_exists
 from django.contrib.auth.decorators import login_required
+from django.utils.decorators import method_decorator
 from django.views.generic import (
     ListView,
     DetailView,
@@ -18,11 +19,8 @@ from django.contrib.auth.mixins import (
 from .decorators import allwed_users
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
-from django.core.files.uploadedfile import InMemoryUploadedFile
-#
-# a = InMemoryUploadedFile()
-# a.
-
+from rest_framework.exceptions import PermissionDenied, ValidationError
+from datetime import date
 
 
 
@@ -47,7 +45,10 @@ class PlaceDetailView(DetailView):
     model = Place
     template_name = 'places/place_detail.html'
 
+    @method_decorator(login_required(login_url='login'))
     def post(self, request, *args, **kwargs):
+        # if not request.user.is_authenticated:
+        #     return redirect('login')
         review_form = ReviewForm(request.POST)
         reservation_form = ReservationForm(request.POST)
 
@@ -61,7 +62,10 @@ class PlaceDetailView(DetailView):
         if reservation_form.is_valid():
 
             if reservation_already_exists(reservation_form.cleaned_data, place.id):
-                messages.error(request, 'reservation on that time already exists')
+                messages.error(request, 'Reservation On That Time Already Exists!')
+                return redirect('place_detail', pk=place.id)
+            if reservation_form.cleaned_data.get('date') <= date.today():
+                messages.error(request, 'Reservation Cant Be Created With Past Date!')
                 return redirect('place_detail', pk=place.id)
 
             reservation_form.instance.author = request.user
@@ -83,7 +87,11 @@ class PlaceDetailView(DetailView):
 def delete_reservation(request, *args, **kwargs):
     if request.method == 'DELETE':
         pk = kwargs.get('pk')
-        reservation = Reservation.objects.filter(id=pk)
+        reservation = Reservation.objects.filter(id=pk).first()
+        if (reservation.date - date.today()).days < 1:
+            raise ValidationError(detail={'detail': 'Reservation Date Is In Less than 1 Day And Cant Be Deleted!'})
+        if reservation.author.id != request.user.id:
+            raise PermissionDenied()
         reservation.delete()
         return Response({'message': 'reservation deleted'})
 

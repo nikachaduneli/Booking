@@ -138,6 +138,9 @@
                     error: function (rs, e) {
                         console.error(rs.responseText);
                         console.error(rs.status);
+                        let message = JSON.parse(rs.responseText)['detail'];
+                        $("#messages").addClass("alert message text-center alert-danger");
+                        $("#messages").html(message);
                     },
                     complete: function () {
                         console.log('request completed')
