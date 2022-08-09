@@ -1,5 +1,7 @@
 {% load static %}
 {% load tags %}
+{% load crispy_forms_tags %}
+
 
 <!DOCTYPE html>
 <html>
@@ -99,5 +101,22 @@
 </main>
 
 <script src="{% static 'js/lightbox-plus-jquery.min.js' %}"></script>
+<script src="{% static 'js/forms.js' %}"></script>
+<script src="{% static 'js/requests.js' %}"></script>
+<script type="text/javascript">
+    {% if res_form %}
+        let reservation_form = `{{res_form|crispy}}`;
+    {% endif %}
+    {% if review_form %}
+        let review_form = `{{review_form|crispy}}`;
+    {% endif %}
+    {% if csrf_token %}
+        let csrf_token = `{{ csrf_token }}`;
+        let csrf_token_input = `{% csrf_token %}`;
+    {% endif %}
+    {% if object %}
+        let object_id = {{ object.id }}
+    {% endif %}
+</script>
 </body>
 </html>

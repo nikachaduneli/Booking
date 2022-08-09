@@ -59,35 +59,7 @@
     {% endif %}
     <button class="btn button" id="add_review">Add Review</button>
     <div id="review_form_div"></div>
-
-    <script type="text/javascript">
-        let make_reservation_button = document.getElementById('make_reservation');
-        let reservation_div = document.getElementById('reservation_form');
-        make_reservation_button.onclick = function (){
-            reservation_div.innerHTML = `
-                    <form method="POST" onsubmit="submit_button.disabled=true; return true;" class="form" action="{%url 'place_detail' object.id%}" >
-                         {% csrf_token %}
-                         {{res_form|crispy}}
-                         <button type="submit" class="btn btn-outline-dark"  value="Submit" name="submit_button">Add</button>
-                    </form>`;
-        }
-        let add_review_button = document.getElementById('add_review')
-        let review_form_div = document.getElementById('review_form_div');
-        add_review_button.onclick = function (){
-            review_form_div.innerHTML = `
-            <form method="POST" onsubmit="submit_button.disabled=true; return true;" class="form" action="{%url 'place_detail' object.id%}" >
-                {% csrf_token %}
-                {{review_form|crispy}}
-                <button type="submit" class="btn btn-outline-dark"  value="Submit" name="submit_button">Add</button>
-            </form>`;
-            window.scrollTo(0,document.body.scrollHeight);
-        }
-
-
-    </script>
 {% endblock %}
-
-
 
 {% block side_content %}
     {% if user|has_reservation:object.id %}
@@ -117,39 +89,4 @@
     {% else %}
         <h3>no reservations</h3>
     {% endif %}
-    <script type="text/javascript">
-
-        function delete_reservation(id){
-            let confirmAction = confirm("Are You Sure To Delete This Reservation?");
-            if (confirmAction) {
-                $.ajax({
-                    url: "/delete-reservation/"+id+'/',
-                    headers: {
-                        'Conten-Type': 'application/json',
-                        'X-CSRFToken': "{{ csrf_token }}",
-                    },
-                    type: "DELETE",
-                    cache: false,
-                    processData: false,
-                    contentType: false,
-                    success: function (data) {
-                        $("#reservation-"+id).remove()
-                        console.log('success', data);
-                    },
-                    error: function (rs, e) {
-                        console.error(rs.responseText);
-                        console.error(rs.status);
-                        let message = JSON.parse(rs.responseText)['detail'];
-                        $("#messages").addClass("alert message text-center alert-danger");
-                        $("#messages").html(message);
-                    },
-                    complete: function () {
-                        console.log('request completed')
-                    }
-                });
-
-            }
-        }
-
-    </script>
 {% endblock %}
