@@ -5,3 +5,4 @@ django-cleanup
 django-filter
 whitenoise
 djangorestframework
+django-crontab
