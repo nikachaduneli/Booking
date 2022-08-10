@@ -22,10 +22,40 @@ function delete_reservation(id){
                 let message = JSON.parse(rs.responseText)['detail'];
                 $("#messages").addClass("alert message text-center alert-danger");
                 $("#messages").html(message);
+                window.scrollTo(0,0);
             },
             complete: function () {
                 console.log('request completed')
             }
         });
     }
+}
+
+function delete_image(id){
+    $.ajax({
+        url: "/delete-image/" + id + '/',
+        headers: {
+            'Conten-Type': 'application/json',
+            'X-CSRFToken': csrf_token,
+        },
+        type: "DELETE",
+        cache: false,
+        processData: false,
+        contentType: false,
+        success: function (data) {
+            $("#image-" + id).remove()
+            console.log('success', data);
+        },
+        error: function (rs, e) {
+            console.error(rs.responseText);
+            console.error(rs.status);
+            let message = JSON.parse(rs.responseText)['detail'];
+            $("#messages").addClass("alert message text-center alert-danger");
+            $("#messages").html(message);
+            window.scrollTo(0,0);
+        },
+        complete: function () {
+            console.log('request completed')
+        }
+    });
 }

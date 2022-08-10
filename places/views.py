@@ -95,6 +95,16 @@ def delete_reservation(request, *args, **kwargs):
         reservation.delete()
         return Response({'message': 'reservation deleted'})
 
+@api_view(['DELETE'])
+def delete_image(request, *args, **kwargs):
+    if request.method == 'DELETE':
+        pk = kwargs.get('pk')
+        image = PlaceImage.objects.filter(id=pk).first()
+        if image.place.owner.id != request.user.id:
+            raise PermissionDenied()
+        image.delete()
+        return Response({'message': 'reservation deleted'})
+
 
 class PlaceUpdateView(LoginRequiredMixin, UserPassesTestMixin, UpdateView):
     model = Place

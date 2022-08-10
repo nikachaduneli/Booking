@@ -9,6 +9,22 @@
     height: 200px;
 }
 
+.form-images {
+    margin: 10px 50px ;
+    display: inline-grid;
+    grid-template-columns: auto auto auto auto;
+    gap: 5px;
+}
+.form-images .form-image{
+    position: relative;
+}
+.form-images img {
+    transition: 0.2s;
+    width: 90px;
+    height: 90px;
+    margin:10px;
+}
+
 .gallery img:hover{
     transform: scale(1.03);
 }
@@ -69,6 +85,17 @@ body {
 }
 .delete-reservation-button:hover{
     background-color: #ff384b;
+}
+
+.delete-image-button {
+    background-color: #dc3545;
+    color: #fff;
+    border-radius: 50%;
+    border-color: #dc3545;
+    display: inline-block;
+    font-weight: bold;
+    text-align: center;
+    padding: 5px;
 }
 
 
@@ -171,7 +198,7 @@ body {
 
 .reservations {
     display: inline-grid;
-    grid-template-columns: 200px 200px;
+    grid-template-columns: 200px 200px ;
     gap: 5px;
 
 }

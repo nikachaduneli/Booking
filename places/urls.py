@@ -8,6 +8,7 @@ urlpatterns = [
     path('place/update/<int:pk>/', place_views.PlaceUpdateView.as_view(), name='place_update'),
     path('place/delete/<int:pk>/', place_views.PlaceDeleteView.as_view(), name='place_delete'),
 
-    path('delete-reservation/<int:pk>/',  place_views.delete_reservation, name="delete_reservation")
+    path('delete-reservation/<int:pk>/',  place_views.delete_reservation, name="delete_reservation"),
+    path('delete-image/<int:pk>/',  place_views.delete_image, name="delete_image")
 
 ]

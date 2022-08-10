@@ -145,5 +145,5 @@ CRISPY_TEMPLATE_PACK = 'bootstrap4'
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 CRONJOBS = [
-    ('0 1 * * *', 'places.cron.remove_old_reservations')
+    ('1 1 * * *', 'places.cron.remove_old_reservations')
 ]
