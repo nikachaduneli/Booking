@@ -35,9 +35,6 @@ class Place(models.Model):
         return self.name
 
 
-
-
-
 class PlaceImage(models.Model):
     place = models.ForeignKey(Place, on_delete=models.CASCADE, related_name='images')
     image = models.ImageField(upload_to='place_pics', default='default.jpg', blank=True, null=True)

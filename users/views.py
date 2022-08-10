@@ -69,5 +69,4 @@ def my_places(request):
     paginator = paginate(paginate_by=10, objects=places, request=request)
     context.update(paginator)
 
-
     return render(request, 'users/profile.html', context=context)

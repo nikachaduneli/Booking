@@ -82,6 +82,8 @@ body {
     vertical-align: middle;
     font-size: 1rem;
     line-height: 1.5;
+    cursor: pointer;
+
 }
 .delete-reservation-button:hover{
     background-color: #ff384b;
@@ -96,6 +98,7 @@ body {
     font-weight: bold;
     text-align: center;
     padding: 5px;
+    cursor: pointer;
 }
 
 

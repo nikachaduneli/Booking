@@ -10,15 +10,17 @@
                 <legend class="border-bottom mb-4">Create New Place</legend>
             {%endif%}
             {{ form|crispy}}
+            <legend>Add Images</legend>
             {{ image_form|crispy }}
             <div class="form-group">
                 {% if update %}
+                    <legend>Remove Old Images</legend>
                     <div class="form-images">
                         {% for image in object.images.all %}
                             <div class="form-image" id="image-{{ image.id }}">
                                 <img src="{{ image.image.url }}"  alt="{{ object.name }}">
-                                <div style="text-align: right;position: absolute; right: 5px;top:2px;z-index: 2;" >
-                                    <p class="delete-image-button" onclick="delete_image({{ image.id }})" id="delete_reservation">X</p>
+                                <div style="text-align: right;position: absolute; right: 5px;top:2px;" >
+                                    <p class="delete-image-button" onclick="delete_image({{ image.id }})" id="delete_image">X</p>
                                 </div>
                             </div>
                         {% endfor %}
