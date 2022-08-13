@@ -50,7 +50,7 @@
     margin: 10px 5px 10px 10px;
 }
 body {
-    background-color: #f3f3f3 !important;
+    background-color: #f8f8f8 !important;
 }
 .label {
     font-weight: bold;
@@ -86,7 +86,7 @@ body {
 
 }
 .delete-reservation-button:hover{
-    background-color: #ff384b;
+    background-color: #ff5b6c;
 }
 
 .delete-image-button {
@@ -97,10 +97,15 @@ body {
     display: inline-block;
     font-weight: bold;
     text-align: center;
-    padding: 5px;
+    white-space: nowrap;
+    vertical-align: middle;
+    font-size: 1rem;
+    line-height: 1.5;
     cursor: pointer;
 }
-
+.delete-image-button:hover{
+    background-color: #ff5b6c;
+}
 
 .article-metadata {
     padding-bottom: 1px;
@@ -110,7 +115,7 @@ body {
 
 .form {
     background-color: #fff;
-    border:1px solid #a3a2a2;
+    border:1px solid #dbdbdb;
     border-radius: 5px;
     padding: 20px;
     margin: 40px 0px 40px 0px ;

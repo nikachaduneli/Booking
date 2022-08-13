@@ -76,7 +76,7 @@
                 <div class="card text-white bg-success" id="reservation-{{ reservation.id }}" style="max-width: 28rem;">
                     {% if reservation.author == user %}
                         <div style="text-align: right;position: absolute; right: 5px;top:2px">
-                            <button class="delete-reservation-button" onclick="delete_reservation({{ reservation.id }})" id="delete_reservation">X</button>
+                            <button class="delete-reservation-button" title="Delete" onclick="delete_reservation({{ reservation.id }})" id="delete_reservation">X</button>
                         </div>
                     {% endif %}
                     <div class="reservation">
@@ -89,4 +89,5 @@
     {% else %}
         <h3>no reservations</h3>
     {% endif %}
+    <script src="{% static 'js/lightbox-plus-jquery.min.js' %}"></script>
 {% endblock %}

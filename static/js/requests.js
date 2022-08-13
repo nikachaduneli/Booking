@@ -1,61 +1,36 @@
+function  delete_request(url, element_id){
+    const xhttp = new XMLHttpRequest();
+    xhttp.open("DELETE", url, true);
+    xhttp.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
+    xhttp.setRequestHeader('X-CSRFToken', csrf_token);
+    xhttp.onload = function (){
+        if (xhttp.status === 200){
+            let image = document.getElementById(element_id);
+            image.remove();
+        }
+        else {
+            let response = JSON.parse(xhttp.response);
+            let message_div = document.getElementById('messages');
+            message_div.className = "alert message text-center alert-danger"
+            message_div.innerHTML = response['detail'];
+            window.scrollTo(0,0);
+        }
+    }
+    xhttp.send();
+
+}
+
+function delete_images(id){
+     let url = "/delete-image/" + id + '/';
+    let element_id = 'image-'+id;
+    delete_request(url, element_id);
+}
 
 function delete_reservation(id){
     let confirmAction = confirm("Are You Sure To Delete This Reservation?");
     if (confirmAction) {
-        $.ajax({
-            url: "/delete-reservation/" + id + '/',
-            headers: {
-                'Conten-Type': 'application/json',
-                'X-CSRFToken': csrf_token,
-            },
-            type: "DELETE",
-            cache: false,
-            processData: false,
-            contentType: false,
-            success: function (data) {
-                $("#reservation-" + id).remove()
-                console.log('success', data);
-            },
-            error: function (rs, e) {
-                console.error(rs.responseText);
-                console.error(rs.status);
-                let message = JSON.parse(rs.responseText)['detail'];
-                $("#messages").addClass("alert message text-center alert-danger");
-                $("#messages").html(message);
-                window.scrollTo(0,0);
-            },
-            complete: function () {
-                console.log('request completed')
-            }
-        });
+        let url =  "/delete-reservation/" + id + '/';
+        let element_id = 'reservation-'+id;
+        delete_request(url, element_id);
     }
-}
-
-function delete_image(id){
-    $.ajax({
-        url: "/delete-image/" + id + '/',
-        headers: {
-            'Conten-Type': 'application/json',
-            'X-CSRFToken': csrf_token,
-        },
-        type: "DELETE",
-        cache: false,
-        processData: false,
-        contentType: false,
-        success: function (data) {
-            $("#image-" + id).remove()
-            console.log('success', data);
-        },
-        error: function (rs, e) {
-            console.error(rs.responseText);
-            console.error(rs.status);
-            let message = JSON.parse(rs.responseText)['detail'];
-            $("#messages").addClass("alert message text-center alert-danger");
-            $("#messages").html(message);
-            window.scrollTo(0,0);
-        },
-        complete: function () {
-            console.log('request completed')
-        }
-    });
 }

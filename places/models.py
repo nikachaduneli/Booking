@@ -4,7 +4,7 @@ from django.utils import timezone
 from django.urls import reverse
 from django.core.validators import MinValueValidator, MaxValueValidator
 from users.models import User
-from PIL import Image as Image
+from PIL import Image
 
 
 class Place(models.Model):
@@ -15,13 +15,15 @@ class Place(models.Model):
     address = models.CharField(max_length=100)
     description = models.TextField(max_length=1000)
     price = models.FloatField(default=0)
+    score = models.DecimalField(max_digits=3, decimal_places=1,
+                                validators=[MaxValueValidator(10), MinValueValidator(0)], default=0.0)
 
     @property
     def images_list(self):
         return [i.image.url for i in self.images.all()]
 
     @property
-    def score(self):
+    def score_avg(self):
         scores = [review.score for review in self.reviews.all()]
         if len(scores) != 0:
             score = sum(scores) / len(scores)
@@ -64,3 +66,8 @@ class Review(models.Model):
     comment = models.TextField(max_length=500)
     score = models.DecimalField(max_digits=3, decimal_places=1,
                                 validators=[MaxValueValidator(10), MinValueValidator(0)], default=0.0)
+
+    def save(self, *args, **kwargs):
+        super(Review, self).save(args, **kwargs)
+        self.place.score = self.place.score_avg
+        self.place.save()
