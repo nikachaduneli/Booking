@@ -1,0 +1,10 @@
+<div style="display:flex">
+    {% for widget in widget.subwidgets %}
+        <div style="display:block; margin-inline: 5px;">
+            {% include widget.template_name %}
+        </div>
+        {% if forloop.first %}
+            <p> _ </p>
+        {% endif %}
+    {% endfor %}
+</div>
