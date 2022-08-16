@@ -176,8 +176,11 @@ def create_place(request, *args, **kwargs):
             place = place_form.save(commit=False)
             place.owner = request.user
             place.save()
-            for image in images:
-                PlaceImage.objects.create(place=place, image=image)
+            if len(images) == 0:
+                PlaceImage.objects.create(place=place)
+            else:
+                for image in images:
+                    PlaceImage.objects.create(place=place, image=image)
 
             messages.success(request, "New place Added")
             return redirect("place_list")
