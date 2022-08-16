@@ -1,6 +1,6 @@
 from django import forms
 from .models import PlaceImage, Place, Review, Reservation
-from django.core.validators import MinValueValidator, MaxValueValidator
+from django.core.exceptions import ValidationError
 
 
 class PlaceForm(forms.ModelForm):
@@ -17,8 +17,18 @@ class PlaceImageForm(forms.ModelForm):
         super().__init__(*args, **kwargs)
         self.fields['image'].required = False
 
-    image = forms.ImageField(label='images',
-                             widget=forms.ClearableFileInput(attrs={'multiple': True}))
+    image = forms.ImageField(widget=forms.ClearableFileInput(attrs={'multiple': True, 'class': 'form-control'}))
+
+    def clean(self):
+        cleaned_date = super(PlaceImageForm, self).clean()
+        image_extensions = ['jpeg', 'png', 'jpg', 'gif', 'psd', 'pdf', 'eps', 'webp']
+        images = self.files.getlist('image')
+        if len(images) > 0:
+            for image in images:
+                ext = image.name.split('.')[-1]
+                if ext.lower() not in image_extensions:
+                    raise ValidationError({'image': 'invalid image type "%s"' % ext})
+        return cleaned_date
 
     class Meta:
         model = PlaceImage

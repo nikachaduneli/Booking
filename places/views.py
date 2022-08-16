@@ -5,6 +5,7 @@ from .forms import (
     ReviewForm,
     ReservationForm
 )
+from django.urls import reverse
 from django.shortcuts import render, redirect
 from django.contrib import messages
 from .filters import PlaceFilter
@@ -118,8 +119,14 @@ class PlaceUpdateView(LoginRequiredMixin, UserPassesTestMixin, UpdateView):
 
     def post(self, request, *args, **kwargs):
         self.object = self.get_object()
-        for image in request.FILES.getlist('image'):
-            PlaceImage.objects.create(place=self.object, image=image)
+        image_form = PlaceImageForm(request.POST, request.FILES)
+        if image_form.is_valid():
+            for image in request.FILES.getlist('image'):
+                PlaceImage.objects.create(place=self.object, image=image)
+        else:
+            for field in image_form.errors:
+                messages.error(request, image_form.errors[field].as_text())
+            return redirect('place_update', pk=self.object.id)
 
         return super().post(request, *args, **kwargs)
 
@@ -163,7 +170,8 @@ class PlaceDeleteView(LoginRequiredMixin, UserPassesTestMixin, DeleteView):
 def create_place(request, *args, **kwargs):
     if request.method == "POST":
         place_form = PlaceForm(request.POST)
-        if place_form.is_valid():
+        image_form = PlaceImageForm(request.POST, request.FILES)
+        if place_form.is_valid() and image_form.is_valid():
             images = request.FILES.getlist('image')
             place = place_form.save(commit=False)
             place.owner = request.user
@@ -173,8 +181,6 @@ def create_place(request, *args, **kwargs):
 
             messages.success(request, "New place Added")
             return redirect("place_list")
-        else:
-            messages.error(request, f'{place_form.errors}')
     else:
         place_form = PlaceForm()
         image_form = PlaceImageForm()
