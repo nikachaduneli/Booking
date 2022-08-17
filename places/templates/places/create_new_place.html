@@ -10,22 +10,24 @@
                 <legend class="border-bottom mb-4">Create New Place</legend>
             {%endif%}
             {{ form|crispy}}
+            {% if update %}
+                <legend>Remove Old Images</legend>
+                <div class="form-images">
+                    {% for image in object.images.all %}
+                        <div class="form-image" id="image-{{ image.id }}">
+                            <img src="{{ image.image.url }}"  alt="{{ object.name }}">
+                            <div style="text-align: right;position: absolute; right: 5px;top:2px;" >
+                                <button type="button" class="delete-image-button" onclick="delete_images({{ image.id }})" id="delete_image">X</button>
+                            </div>
+                        </div>
+                    {% endfor %}
+                </div>
+                <br>
+            {% endif %}
             <legend>Add Images</legend>
             {{ image_form|crispy }}
             <div class="form-group">
                 {% if update %}
-                    <legend>Remove Old Images</legend>
-                    <div class="form-images">
-                        {% for image in object.images.all %}
-                            <div class="form-image" id="image-{{ image.id }}">
-                                <img src="{{ image.image.url }}"  alt="{{ object.name }}">
-                                <div style="text-align: right;position: absolute; right: 5px;top:2px;" >
-                                    <button type="button" class="delete-image-button" onclick="delete_images({{ image.id }})" id="delete_image">X</button>
-                                </div>
-                            </div>
-                        {% endfor %}
-                    </div>
-                    <br>
                     <button type="submit" class="btn btn-outline-info">Update</button>
                 {% else %}
                     <button type="submit" class="btn btn-outline-info">Add</button>
