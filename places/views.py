@@ -120,6 +120,9 @@ class PlaceUpdateView(LoginRequiredMixin, UserPassesTestMixin, UpdateView):
         self.object = self.get_object()
         image_form = PlaceImageForm(request.POST, request.FILES)
         if image_form.is_valid():
+            for image in self.object.images.all():
+                if image.image.name == 'default.jpg':
+                    image.delete()
             for image in request.FILES.getlist('image'):
                 PlaceImage.objects.create(place=self.object, image=image)
         else:
