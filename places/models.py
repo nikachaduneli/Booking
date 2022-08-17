@@ -13,7 +13,7 @@ class Place(models.Model):
     date_posted = models.DateTimeField(default=timezone.now)
     city = models.CharField(max_length=100, default='')
     address = models.CharField(max_length=100)
-    description = models.TextField(max_length=1000)
+    description = models.TextField(max_length=10000)
     price = models.FloatField(default=0)
     score = models.DecimalField(max_digits=3, decimal_places=1,
                                 validators=[MaxValueValidator(10), MinValueValidator(0)], default=0.0)

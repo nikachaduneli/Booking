@@ -5,7 +5,6 @@ from .forms import (
     ReviewForm,
     ReservationForm
 )
-from django.urls import reverse
 from django.shortcuts import render, redirect
 from django.contrib import messages
 from .filters import PlaceFilter
