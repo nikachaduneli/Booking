@@ -215,3 +215,34 @@ body {
     text-align: center;
     padding: 10px;
 }
+
+.heading {
+    margin-bottom: 5rem;
+    font-weight: bold;
+    text-align: center;
+}
+
+.icon {
+    max-width: 20px;
+    margin-right: 5px;
+    margin-bottom: 2px;
+}
+
+.nav-button {
+    color: #21262d;
+    box-sizing: border-box;
+    vertical-align: center;
+    border-radius: 2.625rem;
+    font-weight: bold;
+    font-size: .875rem;
+    letter-spacing: .03em;
+    text-align: center;
+    transition: background-color .2s,border-color .2s,color .2s;
+    cursor: pointer;
+}
+.register{
+    background-color: #f15700;
+}
+.register:hover{
+    background-color: #ff5d00;
+}

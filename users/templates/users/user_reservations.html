@@ -1,0 +1,21 @@
+{%  extends 'users/profile.html' %}
+{% load crispy_forms_tags %}
+{% block content %}
+    {% if not objects %}
+        <h2 class="heading">You Don't Have any Reservations Yet</h2>
+    {% else %}
+        <h2 class="heading">My Reservations</h2>
+        {% for object in objects %}
+            <div class="card " style="float:left; display:inline; width: 45%; margin: 10px;">
+                <img class="card-img-top" src="{{object.place.images.first.image.url}}" alt="Card image cap">
+                <div class="card-body">
+                    <h5 class="card-title font-weight-bold">On -  {{ object.date|date:"d, M, Y " }}</h5>
+                    <p class="card-text">{{ object.start_hour|time:"H:i" }} - {{ object.end_hour|time:"H:i"}}</p>
+                    <div style="text-align: right">
+                        <a href="{% url 'place_detail' object.place.id %}" class="btn btn-primary">See Place</a>
+                    </div>
+                </div>
+            </div>
+        {% endfor %}
+    {% endif %}
+{% endblock %}

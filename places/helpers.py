@@ -21,9 +21,9 @@ def paginate(paginate_by, objects, request) -> dict:
 
         is_paginated = True
 
-        return {'is_paginated': is_paginated, 'page_obj': page_obj, 'places': objects}
+        return {'is_paginated': is_paginated, 'page_obj': page_obj, 'objects': objects}
 
-    return {'is_paginated': is_paginated, 'places': objects}
+    return {'is_paginated': is_paginated, 'objects': objects}
 
 
 def reservation_already_exists(new_reservation, place_id):

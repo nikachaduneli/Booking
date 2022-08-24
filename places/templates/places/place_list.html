@@ -1,23 +1,23 @@
 {% extends 'places/base.html' %}
 {% load crispy_forms_tags %}
 {% block content %}
-    {% for place in places %}
+    {% for object in objects %}
         <article class=" mb-3" style="">
             <div class="card" style="flex-direction: row;">
-                <img src="{{place.images.first.image.url}}"  class="card-img card-img-top" alt="image">
+                <img src="{{object.images.first.image.url}}"  class="card-img card-img-top" alt="image">
                 <div class="card-body">
                     <div class="right-side">
-                        <p class="price">{{ place.price}} $</p>
-                        <p class="rating">{{ place.score }}</p>
+                        <p class="price">{{ object.price}} $</p>
+                        <p class="rating">{{ object.score }}</p>
                     </div>
-                    <h3 class="card-title">{{ place.name }}</h3>
-                    <small>{{ place.city }}</small>
-                    {% if place.description|length > 30 %}
-                        <p class="card-text">{{place.description|truncatechars:100 }}</p>
+                    <h3 class="card-title">{{ object.name }}</h3>
+                    <small>{{ object.city }}</small>
+                    {% if object.description|length > 30 %}
+                        <p class="card-text">{{object.description|truncatechars:100 }}</p>
                     {% else %}
-                        <p class="card-text">{{place.description}}</p>
+                        <p class="card-text">{{object.description}}</p>
                     {% endif %}
-                    <a href="{% url 'place_detail' place.id %}" class="btn btn-primary">See Details</a>
+                    <a href="{% url 'place_detail' object.id %}" class="btn btn-primary">See Details</a>
                 </div>
             </div>
         </article>

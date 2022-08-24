@@ -23,25 +23,27 @@
 </head>
 <body>
 <header class="site-header" style="margin-bottom: 100px">
-    <nav class="navbar navbar-expand-md navbar-dark bg-steel bg-dark fixed-top">
+    <nav class="navbar navbar-expand-md navbar-dark bg-dark fixed-top" style="background-color: #53b873">
         <div class="container">
             <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarToggle" aria-controls="navbarToggle" aria-expanded="false" aria-label="Toggle navigation">
                 <span class="navbar-toggler-icon"></span>
             </button>
             <div class="collapse navbar-collapse" id="navbarToggle">
                 <div class="navbar-brand mr-auto">
-                    <a class="navbar-brand " href="{% url 'place_list' %}">Home</a>
+                    <a class="navbar-brand nav-link font-weight-bold" href="{% url 'place_list' %}">Home</a>
                 </div>
                 <div class="navbar-nav">
                     {% if user.is_authenticated %}
                         {% if user|has_group:'Place Owner' %}
-                            <a class="nav-link nav-link" aria-current="page" href="{% url 'new_place' %}">Add New Place</a>
+                            <a class="nav-link nav-link font-weight-bold" aria-current="page" href="{% url 'new_place' %}">Add New Place</a>
+                            <a class="nav-item nav-link font-weight-bold" href="{% url 'my_places' %}" >My Places</a>
+                        {% else %}
+                            <a class="nav-item nav-link font-weight-bold" href="{% url 'my_reservations' %}" >My Reservations</a>
                         {% endif %}
-                        <a class="nav-item nav-link" href="{% url 'my_places' %}" >My Places</a>
-                        <a class="nav-item nav-link" href="{% url 'logout' %}" >Log Out</a>
+                        <a class="nav-item nav-link font-weight-bold" href="{% url 'logout' %}" >Log Out</a>
                     {% else %}
-                        <a class="nav-item nav-link" href="{% url 'login' %}">Login</a>
-                        <a class="nav-item nav-link" href="{% url 'register' %}">Register</a>
+                        <a class="nav-item nav-link font-weight-bold" href="{% url 'login' %}"><img class="icon" src="{% static 'icons/login.png' %}">Login</a>
+                        <a class="nav-item nav-link nav-button register" href="{% url 'register' %}">Register</a>
                     {% endif %}
                 </div>
             </div>
