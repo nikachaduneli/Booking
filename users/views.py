@@ -14,26 +14,16 @@ def user_register(request):
     if request.method == 'POST':
         form = UserRegisterForm(request.POST)
         if form.is_valid():
-            try:
-                user = form.save()
-                user_type = form.cleaned_data.get('user_type')
-                if user_type == '1':
-                    group = Group.objects.get(name='owner')
-                elif user_type == '2':
-                    group = Group.objects.get(name='costumer')
-                else:
-                    messages.error(request, 'invalid user type')
-                    return redirect('register')
-
-                # user.groups.add(group)
-                return redirect('login')
-            except:
-                messages.error(request, 'something went wrong try again')
-                return redirect('register')
-
+            form.save()
+            return redirect('login')
     else:
         form = UserRegisterForm()
-    return render(request, 'users/register.html', {'form': form})
+
+    context = {
+        'form': form,
+        'title': 'Register'
+    }
+    return render(request,'users/register.html', context=context)
 
 
 class UserLoginView(LoginView):
@@ -47,6 +37,10 @@ class UserLoginView(LoginView):
     def post(self, request, *args, **kwargs):
         return super().post(self, request, *args, **kwargs)
 
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['title'] = 'Login'
+        return context
 
 @login_required(login_url='login')
 def my_places(request):

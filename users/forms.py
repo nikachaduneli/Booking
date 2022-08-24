@@ -5,12 +5,12 @@ from django.contrib.auth.forms import UserCreationForm
 
 class UserRegisterForm(UserCreationForm):
     user_type = forms.ChoiceField(choices=((None, '----'),
-                                          ('Place Owner', 'Place Owner'),
-                                          ('Costumer', 'Costumer')))
+                                           ('Place Owner', 'Place Owner'),
+                                           ('Costumer', 'Costumer')))
 
     class Meta:
         model = User
-        fields = ['username', 'first_name', 'last_name', 'user_type', 'phone_number', 'password1', 'password2']
+        fields = ['username', 'first_name', 'last_name', 'email', 'phone_number', 'user_type', 'password1', 'password2']
 
 
 class UserUpdateForm(forms.ModelForm):
