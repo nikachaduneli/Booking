@@ -5,7 +5,7 @@ from .forms import (
     ReviewForm,
     ReservationForm
 )
-from django.shortcuts import render, redirect
+from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib import messages
 from .filters import PlaceFilter
 from .helpers import (
@@ -79,7 +79,6 @@ class PlaceDetailView(DetailView):
         return redirect('place_detail', pk=place.id)
 
     def get_context_data(self, **kwargs):
-        place = self.get_object()
         context = super().get_context_data(**kwargs)
         context['title'] = self.object.name
         context['review_form'] = ReviewForm
@@ -111,43 +110,35 @@ def delete_image(request, *args, **kwargs):
         return Response({'message': 'reservation deleted'})
 
 
-class PlaceUpdateView(LoginRequiredMixin, UserPassesTestMixin, UpdateView):
-    model = Place
-    fields = ['name', 'city', 'address', 'price', 'description']
-    template_name = 'places/create_new_place.html'
+@allwed_users(allowed_roles=['Place Owner'])
+@login_required(login_url='login')
+def place_update(request, pk):
+    place = get_object_or_404(Place, id=pk.get('pk'))
+    if request.user.id != place.owner_id:
+        return redirect('home')
 
-    def post(self, request, *args, **kwargs):
-        self.object = self.get_object()
+    if request.method == "POST":
+        place_form = PlaceForm(request.POST, instance=place)
         image_form = PlaceImageForm(request.POST, request.FILES)
-        if image_form.is_valid():
-            for image in self.object.images.all():
-                if image.image.name == 'default.jpg':
-                    image.delete()
-            for image in request.FILES.getlist('image'):
-                PlaceImage.objects.create(place=self.object, image=image)
-        else:
-            for field in image_form.errors:
-                messages.error(request, image_form.errors[field].as_text())
-            return redirect('place_update', pk=self.object.id)
+        if place_form.is_valid() and image_form.is_valid():
+            images = request.FILES.getlist('image')
+            place_form.save()
+            for image in images:
+                PlaceImage.objects.create(place=place, image=image)
+            messages.success(request, f'{place.name} Upadated')
+            return redirect('place_detail', pk=place.id)
+    else:
+        place_form = PlaceForm(instance=place)
+        image_form = PlaceImageForm()
 
-        return super().post(request, *args, **kwargs)
+    context = {'form': place_form,
+               'image_form': image_form,
+               'title': f'Update {place.name}',
+               'object': place,
+               'update': True
+               }
 
-    def form_valid(self, form):
-        form.instance.owner = self.request.user
-        return super().form_valid(form)
-
-    def test_func(self):
-        place = self.get_object()
-        if self.request.user == place.owner:
-            return True
-        return False
-
-    def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
-        context['title'] = f'Update {self.object.name}'
-        context['update'] = True
-        context['image_form'] = PlaceImageForm()
-        return context
+    return render(request, 'places/create_new_place.html', context=context)
 
 
 class PlaceDeleteView(LoginRequiredMixin, UserPassesTestMixin, DeleteView):

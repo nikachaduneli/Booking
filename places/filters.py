@@ -11,7 +11,7 @@ class MyRangeWidget(RangeWidget):
 class PlaceFilter(FilterSet):
     city = django_filters.CharFilter(label='City', lookup_expr='icontains')
     price = django_filters.RangeFilter(label='Price Range', widget=MyRangeWidget)
-    score = django_filters.RangeFilter(label='score Range', widget=MyRangeWidget)
+    score = django_filters.RangeFilter(label='Score Range', widget=MyRangeWidget)
 
     class Meta:
         model = Place
