@@ -4,9 +4,9 @@ from django.contrib.auth.forms import UserCreationForm
 
 
 class UserRegisterForm(UserCreationForm):
-    user_type = forms.ChoiceField(choices=((None, '-----'),
-                                           ('1', 'Place Owner'),
-                                           ('2', 'Costumer')))
+    user_type = forms.ChoiceField(choices=((None, '----'),
+                                          ('Place Owner', 'Place Owner'),
+                                          ('Costumer', 'Costumer')))
 
     class Meta:
         model = User
